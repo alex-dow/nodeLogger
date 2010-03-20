@@ -32,6 +32,11 @@ logQueue.prototype.log = function(msg,level)
 		level: level
 	};
 	
+	if (packet.ts.month < 10) packet.ts.month = "0" + packet.ts.month;
+	if (packet.ts.date < 10) packet.ts.date = "0" + packet.ts.date;
+	if (packet.ts.min < 10) packet.ts.min = "0" + packet.ts.min;
+	if (packet.ts.sec < 10) packet.ts.sec = "0" + packet.ts.sec;
+	
 	this.emit("log" + level.substr(0,1).toUpperCase() + level.substr(1,level.length),packet);
 	this.emit("logged",packet);
 };

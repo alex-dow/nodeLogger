@@ -31,10 +31,10 @@ logger.bindCallback(function(listener)
 		{
 			throw "Missing option for logger: 'filename'";
 		}
-		fs.open(listener.options.filename, "a", 700, function(err, fd)
+		fs.open(listener.options.filename, "a", 0700, function(err, fd)
 		{
 			if (err) throw err;
-			fs.write(fd, msg, function(err,written)
+			fs.write(fd, msg + "\n", function(err,written)
 			{
 				if (err) throw err;
 			});
