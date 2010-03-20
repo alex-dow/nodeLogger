@@ -1,0 +1,82 @@
+NodeLogger v0.1
+
+The logger works by defining callbacks for a series events, that custom modules can bind to for custom logging needs.
+
+Available events:
+"debug"
+"notice"
+"warning"
+"error"
+"logged"
+
+"logged" is a generic event triggered every time a log message is added.
+
+Event listeners receive a packet of data:
+
+packet = {
+    ts: {
+        year: 2001,
+        month: "01",
+        date: "01",
+        hour: "01",
+        min: "01",
+        sec: "01",
+        object: instace of Date
+    },
+    level: "debug"/"notice"/"warning"/"error",
+    msg: "This is my log message"
+}
+
+Out of the box, there is a stdout and a file logger. Both can be used at the same time.
+ 
+There is also a method to bind an arbitrary list of options, incase your logger needs them. The options are available directly via the event emitter.
+
+Example of usage ("using the logFile module")
+
+require('./src/logFile')
+var logger = ('./src/logger')
+
+logger.bindOptions({
+	filename: "my-logfile.log"
+})
+
+function addTwoNumbers(a,b)
+{
+	logger.message("Adding two numbers: " + a + "+" + b + "=" + (a+b));
+}
+
+addTwoNumbers(1,1);
+addTwoNumbers(40,2);
+
+
+Example of creating your own log module:
+
+myLogModule.js:
+var logger = require('./src/logger');
+var sys = require('sys');
+
+logger.bindCallback(function(logListener)
+{
+    logListener.addListener("error",function(packet)
+    {
+        sys.puts("[" + packet.level + "] " + packet.msg);
+    });
+});
+
+myProgram.js:
+var logger = require('./src/logger');
+require('./myLogModule');
+
+function answerToLifeUniverseEverything(argAnwer)
+{
+	if (argAnswer != 42)
+	{
+		logger.error("User entered incorrect answer");
+		return false;
+	} else {
+		return true;
+	}
+}
+
+answerToLifeUniverseEverything(10);
+answerToLifeUniverseEverything(42);
